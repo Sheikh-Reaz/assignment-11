@@ -1,5 +1,14 @@
+
+@import url("https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
+
 @plugin "daisyui";
+
+body {
+  font-family: "Urbanist", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
 
 @font-face {
   font-family: "HelveticaCompressed";
@@ -51,6 +60,17 @@
   position: relative;
   overflow: hidden;
   cursor: pointer;
+}
+.square-nav-normal {
+  
+  font-size: 18px;
+  color: black;
+  background: transparent; /* No background */
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  
+  border: 2px solid black;
 }
 
 

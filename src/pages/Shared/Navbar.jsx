@@ -48,8 +48,9 @@ const Navbar = () => {
   );
 
   return (
-    <div className="navbar md:rounded-xl bg-base-100 md:mb-12 p-4 shadow-sm">
-      <div className="navbar-start">
+    <div className="navbar px-10  bg-base-100  shadow-sm">
+
+        <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
             <svg
@@ -93,16 +94,18 @@ const Navbar = () => {
             Log Out
           </button>
         ) : (
-          <Link className="btn" to="/login">
+          <Link className="btn square-nav-normal " to="/login">
             Log in
           </Link>
         )}
 
-        <Link className="btn btn-primary text-black mx-4" to="/register">
+        <Link className="btn square-nav-normal text-black mx-4" to="/register">
           Register
         </Link>
       </div>
-    </div>
+
+</div>
+  
   );
 };
 
