@@ -5,36 +5,21 @@ import useAuth from "./useAuth";
 
 const axiosSecure = axios.create({
   baseURL: "http://localhost:3000",
-  withCredentials: true, // ✅ REQUIRED for HttpOnly cookie
+  withCredentials: true, // required for HttpOnly cookie
 });
 
 const useAxiosSecure = () => {
-  const { user, logOut, loading } = useAuth();
+  const { logOut } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // ✅ SEND FIREBASE TOKEN ONLY ONCE TO SAVE IN COOKIE
-    const sendTokenToServer = async () => {
-      if (user?.accessToken) {
-        await axios.post(
-          "http://localhost:3000/jwt",
-          { token: user.accessToken },
-          { withCredentials: true }
-        );
-      }
-    };
-
-    if (!loading && user?.accessToken) {
-      sendTokenToServer();
-    }
-
-    // ✅ RESPONSE INTERCEPTOR (NO HEADER TOKEN ANYMORE)
+    // 🔥 Response Interceptor — handles unauthorized
     const resInterceptor = axiosSecure.interceptors.response.use(
       (response) => response,
       async (error) => {
-        const statusCode = error.response?.status;
+        const status = error.response?.status;
 
-        if (statusCode === 401 || statusCode === 403) {
+        if (status === 401 || status === 403) {
           await logOut();
           navigate("/login");
         }
@@ -43,10 +28,11 @@ const useAxiosSecure = () => {
       }
     );
 
+    // cleanup
     return () => {
       axiosSecure.interceptors.response.eject(resInterceptor);
     };
-  }, [user, logOut, navigate, loading]);
+  }, [logOut, navigate]);
 
   return axiosSecure;
 };

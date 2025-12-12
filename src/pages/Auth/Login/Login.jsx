@@ -22,7 +22,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { signInUser} = useAuth();
   const axiosInstance = useAxios();
-  const [loadingState, setLoadingState] = useState(false); // ✅ local login loading
+  const [loadingState, setLoadingState] = useState(false); 
 
   const handleLogin = async (data) => {
     setLoadingState(true); // ✅ start login loading

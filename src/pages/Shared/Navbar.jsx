@@ -124,18 +124,23 @@ const Navbar = () => {
         </div>
 
         {user ? (
-          <button onClick={handleLogOut} className="btn">
+          <button onClick={handleLogOut} className="btn square-nav-normal ">
             Log Out
           </button>
         ) : (
-          <Link className="btn square-nav-normal" to="/login">
+            <>
+                      <Link className="btn square-nav-normal" to="/login">
             Log in
           </Link>
-        )}
-
-        <Link className="btn square-nav-normal text-black mx-4" to="/register">
+                  <Link className="btn square-nav-normal mx-1 " to="/register">
           Register
         </Link>
+            </>
+        )
+        
+        }
+
+
       </div>
     </div>
   );

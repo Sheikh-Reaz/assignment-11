@@ -4,7 +4,7 @@ const ThemeToggle = ({ theme, toggleTheme }) => {
   return (
     <button
       onClick={toggleTheme}
-      className="relative w-14 h-8 rounded-full bg-base-300 flex items-center px-1 overflow-hidden"
+      className="relative w-14 h-8 rounded-full bg-[#dfdfdf] flex items-center px-1 overflow-hidden"
     >
       <motion.div
         layout

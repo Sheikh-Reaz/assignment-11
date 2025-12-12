@@ -40,15 +40,15 @@ body {
 /* ---------------- DARK ---------------- */
 
 [data-theme="dark"] body {
-  background-color: rgb(0, 0, 0);
+  background-color:  #181818;
 }
 
 [data-theme="dark"] .text-color {
-  color: white;
+  color: rgb(255, 255, 255);
 }
 
 [data-theme="dark"] .outlet-color {
-  background-color: rgb(219, 219, 219);
+  background-color: #181818;
 }
 
 [data-theme="dark"] .stroke-color {
@@ -65,12 +65,12 @@ body {
 
 /* Light theme */
 [data-theme="light"] .sticky-navbar {
-  background-color: white; /* light background */
+  background-color: rgb(255, 255, 255); /* light background */
 }
 
 /* Dark theme */
 [data-theme="dark"] .sticky-navbar {
-  background-color: black; /* dark background */
+  background-color: #181818; /* dark background */
 }
 
 
