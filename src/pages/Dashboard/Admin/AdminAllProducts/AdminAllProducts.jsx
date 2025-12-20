@@ -1,4 +1,3 @@
-// import React, { useEffect, useState } from "react";
 import useAxiosSecure from "../../../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
@@ -8,34 +7,20 @@ import useDocumentTitle from "../../../../hooks/useDocumentTitle";
 
 const AdminAllProducts = () => {
   const axiosSecure = useAxiosSecure();
-  //   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
   const { user } = useAuth();
-  //   useEffect(() => {
-  //     const fetchProducts = async () => {
-  //       try {
-  //         const res = await axiosSecure.get("/products");
-  //         setProducts(res.data);
-  //       } catch (error) {
-  //         console.error("Failed to fetch products:", error);
-  //       }
-  //     };
 
-  //     fetchProducts();
-  //   }, [axiosSecure]);
-
-  const { data: products = [], refetch } = useQuery({
+  const { data: products = [], refetch, isLoading } = useQuery({
     queryKey: ["products", user?.email],
     enabled: !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get("/products");
-      return res.data;
+      const res = await axiosSecure.get("/all-products");
+      console.log("Products received:", res.data); // Debug log
+      return Array.isArray(res.data) ? res.data : [];
     },
   });
 
   const handleDelete = async (id) => {
-    console.log(id);
-
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -46,124 +31,119 @@ const AdminAllProducts = () => {
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        // 🔥 DELETE API CALL
         const res = await axiosSecure.delete(`/product/${id}`);
-
         if (
           res.data.deletedCount > 0 ||
           res.data.message === "Product deleted successfully"
         ) {
           Swal.fire("Deleted!", "Your product has been deleted.", "success");
-          // refresh product list
           refetch();
         }
       }
     });
   };
+
   const handleShowOnHomeToggle = async (productId, currentValue) => {
     try {
       const res = await axiosSecure.patch(`/update-product/${productId}`, {
         showOnHome: !currentValue,
       });
-
-      if (res.data.success) {
-        refetch();
-      }
+      if (res.data.success) refetch();
     } catch (error) {
       console.error("Failed to update showOnHome:", error);
     }
   };
- useDocumentTitle("All Products");
-  return (
-    <div>
-      <h1>Manage Products</h1>
 
-      <div className="overflow-x-auto min-h-[350px]">
-        <table className="table">
-          {/* head */}
-          <thead className="text-color">
-            <tr>
-              <th>Product SL</th>
-              <th>Product Image</th>
-              <th>Product Title</th>
-              <th>Price</th>
-              <th>Category</th>
-              <th>Created By</th>
-              <th>Show On Home</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product, i) => (
-              <tr key={product.productId}>
-                <td>{i + 1}.</td>
+  useDocumentTitle("All Products");
+
+  if (isLoading) return <p>Loading products...</p>;
+
+  // Debug: Check what's in products array
+  console.log("Products state:", products);
+  console.log("Products length:", products.length);
+
+  return (
+    <div className="overflow-x-auto w-full">
+      <h1 className="mb-4 text-2xl font-semibold">Manage Products</h1>
+
+      <p className="mb-2 font-medium">Total products: {products.length}</p>
+
+      <table className="table w-full">
+        <thead>
+          <tr>
+            <th>SL</th>
+            <th>Image</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Created By</th>
+            <th>Show On Home</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {products && products.length > 0 ? (
+            products.map((product, i) => (
+              <tr key={product._id || product.productId}>
+                <td>{i + 1}</td>
                 <td>
-                  <div className="flex items-center gap-3">
-                    <div className="avatar">
-                      <div className="mask h-20 w-full">
-                        <img src={product.productImg} alt="Product" />
-                      </div>
+                  <div className="avatar">
+                    <div className="mask h-20 w-20">
+                      <img src={product.productImg} alt={product.title} />
                     </div>
                   </div>
                 </td>
-                <td>
-                  <span>{product.title}</span>
-                </td>
+                <td>{product.title}</td>
                 <td>{product.price}</td>
-                <td>
-                  <p>{product.category}</p>
-                </td>
-                <td>
-                  <p>{product.sellerEmail}</p>
-                </td>
+                <td>{product.category}</td>
+                <td>{product.sellerEmail}</td>
                 <td>
                   <input
                     type="checkbox"
                     className="checkbox checkbox-error"
                     checked={product.showOnHome === true}
                     onChange={() =>
-                      handleShowOnHomeToggle(
-                        product.productId,
-                        product.showOnHome
-                      )
+                      handleShowOnHomeToggle(product.productId, product.showOnHome)
                     }
                   />
                 </td>
-
                 <td>
                   <button
-                    onClick={() =>
-                      navigate(`../update-product/${product.productId}`)
-                    }
                     className="btn mr-2"
+                    onClick={() => navigate(`../update-product/${product.productId}`)}
                   >
                     Update
                   </button>
                   <button
-                    onClick={() => handleDelete(product.productId)}
                     className="btn"
+                    onClick={() => handleDelete(product.productId)}
                   >
                     Delete
                   </button>
                 </td>
               </tr>
-            ))}
-          </tbody>
-
-          <tfoot>
+            ))
+          ) : (
             <tr>
-              <th>SL</th>
-              <th>Image</th>
-              <th>Title</th>
-              <th>Price</th>
-              <th>Payment Mode</th>
-              <th>Created By</th>
-              <th>Show On Home</th>
-              <th>Actions</th>
+              <td colSpan="8" className="text-center">
+                No products found
+              </td>
             </tr>
-          </tfoot>
-        </table>
-      </div>
+          )}
+        </tbody>
+        <tfoot>
+          <tr>
+            <th>SL</th>
+            <th>Image</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Created By</th>
+            <th>Show On Home</th>
+            <th>Actions</th>
+          </tr>
+        </tfoot>
+      </table>
     </div>
   );
 };

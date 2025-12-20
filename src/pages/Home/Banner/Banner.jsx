@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router";
 
 import bannerImage3 from "../../../assets/banner-image-3.jpg";
 import banner_1_human from "../../../assets/banner-1-human.png";
@@ -65,6 +66,7 @@ const tileVariants = {
 const Banner = () => {
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const navigate = useNavigate(); // <-- Added useNavigate
 
   /* -------- AUTOPLAY WITH PAUSE -------- */
   useEffect(() => {
@@ -188,7 +190,13 @@ const Banner = () => {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="absolute bottom-4 md:bottom-10 left-4 md:left-10 z-20"
         >
-          <ButtonAnimation2 width={220} height={70} speed={3} stroke="#111827">
+          <ButtonAnimation2
+            width={220}
+            height={70}
+            speed={3}
+            stroke="#111827"
+            onClick={() => navigate("/all-products")} // <-- Navigation added
+          >
             Shop Now
           </ButtonAnimation2>
         </motion.div>
